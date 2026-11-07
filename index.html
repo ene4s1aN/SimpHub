@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fff5d7">
+<title>SimpHub – Dein Fanfiction-Archiv</title>
+<style>
+:root{
+  --cream:#FFF5D7;--cream-deep:#F5E7B8;--pink:#FFB6D0;--pink-soft:#FFE8EF;
+  --pink-pale:#FFF4F7;--rose:#8A5368;--rose-dark:#66384B;--ink:#453640;
+  --muted:#806F78;--line:#E8C9D3;--white:#FFFEFC;--green:#55745D;
+  --shadow:0 3px 12px rgba(116,73,91,.08);--radius:8px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.55 Georgia,"Times New Roman",serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:var(--rose-dark)}
+.topbar{background:var(--pink);border-bottom:5px solid #F49DBD}
+.topbar-inner{max-width:1180px;margin:auto;padding:19px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{color:var(--rose-dark);text-decoration:none;display:flex;flex-direction:column;line-height:1.05}
+.brand-name{font-size:2.2rem;font-weight:bold;letter-spacing:-1px}
+.brand-subtitle{font: .7rem Arial,sans-serif;letter-spacing:.12em;margin-top:7px}
+.top-note{font: .82rem Arial,sans-serif;color:var(--rose-dark);text-align:right}
+.nav-wrap{background:var(--pink-soft);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:0 24px;display:flex;flex-wrap:wrap;gap:2px}
+.nav button{border:0;background:transparent;color:var(--rose-dark);padding:12px 16px;border-bottom:3px solid transparent;font: .9rem Arial,sans-serif}
+.nav button:hover,.nav button.active{background:var(--white);border-bottom-color:var(--rose);color:var(--rose-dark)}
+.page{max-width:1180px;margin:24px auto 45px;padding:0 24px}
+.welcome{background:var(--white);border:1px solid var(--line);border-left:5px solid var(--pink);padding:20px 23px;box-shadow:var(--shadow);margin-bottom:20px}
+h1{margin:0 0 7px;font-size:1.8rem;font-weight:normal;color:var(--rose-dark)}
+h2{margin:0 0 13px;font-size:1.3rem;font-weight:normal;color:var(--rose-dark)}
+h3{margin:0 0 8px;color:var(--rose-dark)}
+p{margin:7px 0}.muted{color:var(--muted)}
+.eyebrow{font: .7rem Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px}
+.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(245px,.85fr);gap:20px;align-items:start}
+.panel{background:var(--white);border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:18px}
+.panel-head{background:var(--pink-soft);border-bottom:1px solid var(--line);padding:11px 15px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.panel-head h2{font-size:1.1rem;margin:0}
+.panel-body{padding:16px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.stat{background:var(--cream);border:1px solid var(--cream-deep);padding:12px;text-align:center}
+.stat-num{display:block;font-size:1.6rem;color:var(--rose)}
+.stat-label{font: .75rem Arial,sans-serif;color:var(--muted)}
+.work-list{display:grid}
+.work-card{padding:15px 17px;border-bottom:1px solid #F0E1E5}
+.work-card:last-child{border-bottom:0}
+.work-title{font-size:1.12rem;font-weight:bold;color:var(--rose-dark);text-decoration:none}
+.work-title:hover{text-decoration:underline}
+.meta{font: .77rem Arial,sans-serif;color:var(--muted);margin:5px 0 8px}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.tag{display:inline-block;background:var(--pink-pale);border:1px solid var(--line);color:var(--rose-dark);padding:2px 7px;border-radius:3px;font: .72rem Arial,sans-serif}
+.status{display:inline-block;background:#edf4ed;border:1px solid #c5d7c5;color:#42634a;padding:2px 7px;border-radius:3px;font: .7rem Arial,sans-serif}
+.status.draft{background:#fff5df;border-color:#e7d5a9;color:#84652b}
+.status.progress{background:#eef2fb;border-color:#ccd5eb;color:#53638a}
+.btn{border:1px solid #D99BB2;background:var(--pink);color:var(--rose-dark);padding:8px 13px;border-radius:5px;font: .85rem Arial,sans-serif}
+.btn:hover{background:#FFA4C4}
+.btn.secondary{background:var(--white);border-color:var(--line)}
+.btn.secondary:hover{background:var(--pink-pale)}
+.btn.danger{background:#fff1f1;border-color:#e6bcbc;color:#8a3030}
+.btn.small{padding:5px 9px;font-size:.78rem}
+.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.quick-links{display:grid;gap:8px}
+.quick-link{display:block;text-align:left;width:100%;background:var(--white);border:1px solid var(--line);padding:10px 12px;color:var(--rose-dark);border-radius:4px}
+.quick-link:hover{background:var(--pink-pale)}
+.notice{background:#fff9e9;border:1px solid #eadcae;padding:11px 13px;font-size:.88rem;border-radius:4px}
+.section-page{display:none}.section-page.active{display:block}
+.form-panel{background:var(--white);border:1px solid var(--line);box-shadow:var(--shadow);padding:20px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font: .82rem Arial,sans-serif;font-weight:bold;color:var(--rose-dark)}
+input,textarea,select{width:100%;border:1px solid #DCC5CD;border-radius:4px;background:#fffdfa;padding:9px 10px;color:var(--ink);outline:none}
+input:focus,textarea:focus,select:focus{border-color:#D77FA2;box-shadow:0 0 0 2px #ffe3ed}
+textarea{min-height:105px;resize:vertical;line-height:1.55}
+.help{font: .75rem Arial,sans-serif;color:var(--muted)}
+.chapter-box{border:1px solid var(--line);background:#fffaf7;padding:14px;margin:12px 0;border-radius:5px}
+.chapter-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.chapter-box textarea{min-height:220px}
+.toolbar{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.toolbar button{border:1px solid var(--line);background:var(--white);border-radius:3px;padding:4px 8px;color:var(--rose-dark);font-size:.8rem}
+.toolbar button:hover{background:var(--pink-soft)}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.search-row{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:9px;margin-bottom:13px}
+.detail-summary{background:var(--pink-pale);border-left:3px solid var(--pink);padding:12px 14px;margin:12px 0}
+.chapter-reading{white-space:pre-wrap;background:#fffdfa;border:1px solid #eee1e4;padding:20px;margin:12px 0;line-height:1.8}
+
+.reader-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;background:var(--pink-soft);border:1px solid var(--line);padding:10px 13px;margin-bottom:12px;border-radius:5px}
+.reader-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.reader-controls button{border:1px solid var(--line);background:var(--white);color:var(--rose-dark);padding:5px 9px;border-radius:4px}
+.reader-paper{max-width:820px;margin:0 auto;background:#fffefa;border:1px solid #eee1d9;padding:clamp(20px,5vw,52px);box-shadow:var(--shadow);min-height:320px}
+.reader-paper h2{text-align:center;margin-bottom:24px}
+.reader-text{white-space:pre-wrap;line-height:1.9;overflow-wrap:anywhere;color:#3f3439}
+.reader-progress{height:7px;background:#f2e3e8;border-radius:8px;overflow:hidden;margin:9px 0 16px}
+.reader-progress-fill{height:100%;background:var(--pink);width:0%;transition:width .2s}
+.chapter-list{display:grid;gap:7px;margin:12px 0}
+.chapter-link{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;width:100%;padding:11px 13px;background:#fffdfa;border:1px solid var(--line);border-radius:4px;color:var(--rose-dark)}
+.chapter-link:hover{background:var(--pink-pale)}
+.chapter-link.current{background:var(--pink-soft);border-color:#d99bb2}
+.reader-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)}
+.reader-meta{font: .78rem Arial,sans-serif;color:var(--muted)}
+
+footer{max-width:1180px;margin:auto;padding:18px 24px 28px;text-align:center;border-top:1px solid var(--line);font: .75rem Arial,sans-serif;color:var(--muted)}
+.hidden{display:none!important}
+@media(max-width:760px){
+ .topbar-inner{align-items:flex-start;flex-direction:column;padding:16px}.top-note{text-align:left}
+ .nav{padding:0 8px}.nav button{padding:10px 9px;font-size:.8rem}
+ .page{padding:0 12px;margin-top:15px}.grid{grid-template-columns:1fr;gap:0}
+ .welcome{padding:16px}h1{font-size:1.5rem}.form-grid{grid-template-columns:1fr}
+ .field.full{grid-column:auto}.search-row{grid-template-columns:1fr}
+ .panel-head{align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="brand" href="#" data-go="home"><span class="brand-name">SimpHub</span><span class="brand-subtitle">DEIN PERSÖNLICHES FANFICTION-ARCHIV</span></a>
+  <div class="top-note">Ein privater Ort für deine Geschichten. ♡</div>
+</div></header>
+<div class="nav-wrap"><nav class="nav" aria-label="Hauptnavigation">
+  <button class="active" data-page="home">Startseite</button>
+  <button data-page="works">Meine Werke</button>
+  <button data-page="new">Neues Werk</button>
+  <button data-page="bookmarks">Lesezeichen</button>
+  <button data-page="settings">Einstellungen</button>
+</nav></div>
+
+<main class="page">
+<section class="section-page active" id="page-home">
+  <div class="welcome"><div class="eyebrow">Willkommen in SimpHub</div><h1>Dein Archiv. Deine Geschichten.</h1><p class="muted">Ein gemütlicher Platz für deine Fanfiction, Ideen und Kapitel. ♡</p></div>
+  <div class="grid">
+    <div>
+      <section class="panel"><div class="panel-head"><h2>Zuletzt bearbeitet</h2><button class="btn secondary small" data-go="works">Alle Werke ansehen</button></div><div id="recentWorks" class="work-list"></div></section>
+      <div class="notice">Deine Werke werden lokal in diesem Browser gespeichert. Exportiere später regelmäßig ein Backup, damit deine Geschichten sicher bleiben.</div>
+    </div>
+    <aside>
+      <section class="panel"><div class="panel-head"><h2>Dein Archiv auf einen Blick</h2></div><div class="panel-body"><div class="stats">
+        <div class="stat"><span class="stat-num" id="statWorks">0</span><span class="stat-label">Werke</span></div>
+        <div class="stat"><span class="stat-num" id="statChapters">0</span><span class="stat-label">Kapitel</span></div>
+        <div class="stat"><span class="stat-num" id="statWords">0</span><span class="stat-label">Wörter</span></div>
+        <div class="stat"><span class="stat-num" id="statDrafts">0</span><span class="stat-label">Entwürfe</span></div>
+      </div></div></section>
+      <section class="panel"><div class="panel-head"><h2>Schnellzugriff</h2></div><div class="panel-body quick-links">
+        <button class="quick-link" data-go="new">＋ Neues Werk erstellen</button>
+        <button class="quick-link" data-go="works">▤ Meine Werke öffnen</button>
+        <button class="quick-link" data-go="bookmarks">☆ Lesezeichen ansehen</button>
+      </div></section>
+    </aside>
+  </div>
+</section>
+
+<section class="section-page" id="page-works">
+  <div class="welcome"><div class="eyebrow">Bibliothek</div><h1>Meine Werke</h1><p class="muted">Alle deine Geschichten an einem Ort.</p></div>
+  <section class="panel"><div class="panel-body">
+    <div class="search-row"><input id="workSearch" type="search" placeholder="Titel, Fandom, Charaktere oder Tags suchen …"><select id="statusFilter"><option value="">Alle Status</option><option>Entwurf</option><option>In Arbeit</option><option>Abgeschlossen</option><option>Pausiert</option></select></div>
+    <div id="allWorks" class="work-list"></div>
+  </div></section>
+  <button class="btn" data-go="new">＋ Neues Werk erstellen</button>
+</section>
+
+<section class="section-page" id="page-new">
+  <div class="welcome"><div class="eyebrow" id="formEyebrow">Schreibbereich</div><h1 id="formHeading">Neues Werk erstellen</h1><p class="muted">Fülle die Angaben zu deiner Geschichte aus und füge deine Kapitel hinzu.</p></div>
+  <form id="workForm" class="form-panel">
+    <input type="hidden" id="workId">
+    <div class="form-grid">
+      <div class="field full"><label for="title">Titel *</label><input id="title" required maxlength="180" placeholder="Titel deiner Fanfiction"></div>
+      <div class="field"><label for="fandom">Fandom</label><input id="fandom" placeholder="z. B. Star Trek: Deep Space Nine"></div>
+      <div class="field"><label for="rating">Rating</label><select id="rating"><option>General Audiences</option><option>Teen And Up Audiences</option><option>Mature</option><option>Explicit</option><option>Not Rated</option></select></div>
+      <div class="field"><label for="category">Kategorie</label><select id="category"><option>Gen</option><option>F/M</option><option>M/M</option><option>F/F</option><option>Multi</option><option>Other</option></select></div>
+      <div class="field"><label for="status">Status</label><select id="status"><option>Entwurf</option><option>In Arbeit</option><option>Abgeschlossen</option><option>Pausiert</option></select></div>
+      <div class="field full"><label for="warnings">Archive Warnings</label><input id="warnings" placeholder="z. B. Keine Archive-Warnungen zutreffend"></div>
+      <div class="field full"><label for="relationships">Relationships / Pairings</label><input id="relationships" placeholder="z. B. Julian Bashir / Original Character"></div>
+      <div class="field full"><label for="characters">Charaktere</label><input id="characters" placeholder="Kommagetrennt, z. B. Julian Bashir, Miles O'Brien"></div>
+      <div class="field full"><label for="tags">Zusätzliche Tags</label><input id="tags" placeholder="Kommagetrennt, z. B. Hurt/Comfort, Slow Burn, Romance"></div>
+      <div class="field full"><label for="summary">Zusammenfassung</label><textarea id="summary" placeholder="Worum geht es in deiner Geschichte?"></textarea></div>
+      <div class="field full"><label for="notes">Anmerkungen</label><textarea id="notes" placeholder="Optionale Notizen zur Geschichte …" style="min-height:75px"></textarea></div>
+    </div>
+    <div style="margin-top:22px"><div class="chapter-top"><h2>Kapitel</h2><button type="button" class="btn secondary small" id="addChapter">＋ Kapitel hinzufügen</button></div><div id="chaptersEditor"></div><p class="help">Jedes Kapitel hat einen eigenen Textbereich. Kapiteltexte werden gemeinsam mit dem Werk gespeichert.</p></div>
+    <div class="actions"><button class="btn" type="submit">Werk speichern</button><button class="btn secondary" type="button" id="cancelEdit">Abbrechen</button></div>
+  </form>
+</section>
+
+<section class="section-page" id="page-detail">
+  <div class="welcome"><div class="eyebrow">Werkansicht</div><h1 id="detailTitle">Fanfiction</h1><p class="muted" id="detailMeta"></p></div>
+  <section class="panel"><div class="panel-body" id="detailContent"></div></section>
+  <button class="btn secondary" data-go="works">← Zurück zu meinen Werken</button>
+</section>
+
+<section class="section-page" id="page-reader">
+  <div class="welcome">
+    <div class="eyebrow">Lesemodus</div>
+    <h1 id="readerWorkTitle">Fanfiction</h1>
+    <p class="muted" id="readerChapterMeta"></p>
+  </div>
+  <div class="reader-toolbar">
+    <div class="reader-meta" id="readerProgressText">Kapitel 1 von 1</div>
+    <div class="reader-controls">
+      <button type="button" id="fontDown" aria-label="Schrift verkleinern">A−</button>
+      <button type="button" id="fontUp" aria-label="Schrift vergrößern">A+</button>
+      <button type="button" id="fontReset">Standard</button>
+    </div>
+  </div>
+  <div class="reader-progress"><div class="reader-progress-fill" id="readerProgressFill"></div></div>
+  <article class="reader-paper">
+    <h2 id="readerChapterTitle">Kapitel</h2>
+    <div class="reader-text" id="readerText"></div>
+    <div class="reader-footer">
+      <button class="btn secondary" id="readerPrev">← Vorheriges Kapitel</button>
+      <button class="btn" id="readerNext">Nächstes Kapitel →</button>
+    </div>
+  </article>
+  <div class="actions" style="justify-content:center;margin-top:15px">
+    <button class="btn secondary" id="backToDetail">Zurück zur Werkübersicht</button>
+  </div>
+</section>
+
+<section class="section-page" id="page-bookmarks">
+  <div class="welcome"><div class="eyebrow">Gespeicherte Werke</div><h1>Lesezeichen</h1><p class="muted">Deine markierten Lieblingsgeschichten.</p></div>
+  <section class="panel"><div id="bookmarkWorks" class="work-list"></div></section>
+</section>
+
+<section class="section-page" id="page-settings">
+  <div class="welcome"><div class="eyebrow">Persönlicher Bereich</div><h1>Einstellungen</h1><p class="muted">Verwalte dein Archiv und deine Datensicherung.</p></div>
+  <section class="panel"><div class="panel-head"><h2>Datensicherung</h2></div><div class="panel-body">
+    <p>Deine Geschichten liegen in der IndexedDB dieses Browsers. Ein Backup schützt sie, falls Browserdaten verloren gehen.</p>
+    <div class="actions"><button class="btn" id="exportBtn">Backup exportieren</button><button class="btn secondary" id="importBtn">Backup importieren</button><input class="hidden" type="file" id="importFile" accept="application/json"></div>
+    <p class="help">Beim Import werden vorhandene Werke durch die Inhalte des Backups ergänzt bzw. anhand ihrer IDs aktualisiert.</p>
+  </div></section>
+  <div class="notice">SimpHub ist eine lokale Einzelplatz-Anwendung. Die Geschichten werden nicht auf einen Server hochgeladen und sind nicht automatisch auf anderen Geräten verfügbar.</div>
+</section>
+</main>
+<footer>SimpHub · Dein privates Fanfiction-Archiv ♡</footer>
+
+<script>
+const DB_NAME = "SimpHubDB";
+const DB_VERSION = 1;
+let db;
+let currentDetailId = null;
+let chapterDrafts = [];
+
+function openDatabase(){
+  return new Promise((resolve,reject)=>{
+    const request=indexedDB.open(DB_NAME,DB_VERSION);
+    request.onupgradeneeded=()=>{const database=request.result;if(!database.objectStoreNames.contains("works"))database.createObjectStore("works",{keyPath:"id"});};
+    request.onsuccess=()=>{db=request.result;resolve(db);};
+    request.onerror=()=>reject(request.error);
+  });
+}
+function store(mode="readonly"){return db.transaction("works",mode).objectStore("works");}
+function getAllWorks(){return new Promise((resolve,reject)=>{const r=store().getAll();r.onsuccess=()=>resolve(r.result.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)));r.onerror=()=>reject(r.error);});}
+function saveWork(work){return new Promise((resolve,reject)=>{const tx=db.transaction("works","readwrite");tx.objectStore("works").put(work);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}
+function deleteWork(id){return new Promise((resolve,reject)=>{const tx=db.transaction("works","readwrite");tx.objectStore("works").delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});}
+function esc(value=""){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function splitTags(value){return value.split(",").map(x=>x.trim()).filter(Boolean);}
+function wordCount(text){return (text.trim().match(/\S+/g)||[]).length;}
+function totalWords(work){return (work.chapters||[]).reduce((sum,ch)=>sum+wordCount(ch.text||""),0);}
+function statusClass(status){return status==="Entwurf"?"draft":status==="In Arbeit"?"progress":"";}
+function showPage(name){
+  document.querySelectorAll(".section-page").forEach(p=>p.classList.toggle("active",p.id==="page-"+name));
+  document.querySelectorAll(".nav [data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(name==="home"||name==="works"||name==="bookmarks")refreshViews();
+}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.go)));
+
+function renderWorkCard(work){
+  const tags=[...(work.characters||[]),...(work.tags||[])].slice(0,7);
+  return `<article class="work-card">
+    <div><span class="status ${statusClass(work.status)}">${esc(work.status||"Entwurf")}</span> <span class="meta">${work.bookmarked?"♡ Lesezeichen":""}</span></div>
+    <a class="work-title" href="#" data-open="${esc(work.id)}">${esc(work.title)}</a>
+    <div class="meta">${esc(work.fandom||"Kein Fandom angegeben")} · ${(work.chapters||[]).length} Kapitel · ${totalWords(work).toLocaleString("de-DE")} Wörter · ${esc(work.rating||"")}</div>
+    ${work.summary?`<p>${esc(work.summary).replace(/\n/g,"<br>")}</p>`:""}
+    ${tags.length?`<div class="tag-row">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>`:""}
+    <div class="actions"><button class="btn secondary small" data-open="${esc(work.id)}">Ansehen</button><button class="btn secondary small" data-edit="${esc(work.id)}">Bearbeiten</button><button class="btn secondary small" data-bookmark="${esc(work.id)}">${work.bookmarked?"♡ Lesezeichen entfernen":"☆ Merken"}</button><button class="btn danger small" data-delete="${esc(work.id)}">Löschen</button></div>
+  </article>`;
+}
+async function refreshViews(){
+  const works=await getAllWorks();
+  const recent=document.getElementById("recentWorks");
+  recent.innerHTML=works.slice(0,3).map(renderWorkCard).join("")||'<div class="empty">Noch keine Geschichten vorhanden. Deine erste Fanfiction wartet schon! ♡</div>';
+  document.getElementById("allWorks").innerHTML=filterWorks(works).map(renderWorkCard).join("")||'<div class="empty">Keine Werke gefunden. Erstelle dein erstes Werk oder ändere deine Suche.</div>';
+  const bookmarks=works.filter(w=>w.bookmarked);
+  document.getElementById("bookmarkWorks").innerHTML=bookmarks.map(renderWorkCard).join("")||'<div class="empty">Du hast noch keine Werke als Lesezeichen markiert.</div>';
+  document.getElementById("statWorks").textContent=works.length;
+  document.getElementById("statChapters").textContent=works.reduce((s,w)=>s+(w.chapters||[]).length,0);
+  document.getElementById("statWords").textContent=works.reduce((s,w)=>s+totalWords(w),0).toLocaleString("de-DE");
+  document.getElementById("statDrafts").textContent=works.filter(w=>w.status==="Entwurf").length;
+  bindCardActions();
+}
+function filterWorks(works){
+  const q=(document.getElementById("workSearch")?.value||"").toLowerCase().trim();
+  const status=document.getElementById("statusFilter")?.value||"";
+  return works.filter(w=>{
+    const hay=[w.title,w.fandom,w.summary,w.relationships,w.characters?.join(" "),w.tags?.join(" ")].join(" ").toLowerCase();
+    return (!q||hay.includes(q))&&(!status||w.status===status);
+  });
+}
+document.getElementById("workSearch").addEventListener("input",refreshViews);
+document.getElementById("statusFilter").addEventListener("change",refreshViews);
+
+function bindCardActions(){
+  document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",e=>{e.preventDefault();openDetail(b.dataset.open);}));
+  document.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editWork(b.dataset.edit)));
+  document.querySelectorAll("[data-delete]").forEach(b=>b.addEventListener("click",()=>removeWork(b.dataset.delete)));
+  document.querySelectorAll("[data-bookmark]").forEach(b=>b.addEventListener("click",()=>toggleBookmark(b.dataset.bookmark)));
+}
+async function toggleBookmark(id){const w=(await getAllWorks()).find(x=>x.id===id);if(!w)return;w.bookmarked=!w.bookmarked;w.updatedAt=Date.now();await saveWork(w);refreshViews();}
+async function removeWork(id){const w=(await getAllWorks()).find(x=>x.id===id);if(!w)return;if(confirm(`Möchtest du „${w.title}“ wirklich löschen? Alle Kapitel dieses Werks werden ebenfalls gelöscht.`)){await deleteWork(id);refreshViews();}}
+async function openDetail(id){
+  const w=(await getAllWorks()).find(x=>x.id===id);if(!w)return;currentDetailId=id;
+  document.getElementById("detailTitle").textContent=w.title;
+  document.getElementById("detailMeta").textContent=[w.fandom,w.status,`${(w.chapters||[]).length} Kapitel`,`${totalWords(w).toLocaleString("de-DE")} Wörter`,w.rating].filter(Boolean).join(" · ");
+  const metadata=[["Kategorie",w.category],["Archive Warnings",w.warnings],["Relationships / Pairings",w.relationships],["Charaktere",(w.characters||[]).join(", ")],["Zusätzliche Tags",(w.tags||[]).join(", ")]].filter(x=>x[1]);
+  document.getElementById("detailContent").innerHTML=`
+    ${w.summary?`<div class="detail-summary"><strong>Zusammenfassung</strong><p>${esc(w.summary).replace(/\n/g,"<br>")}</p></div>`:""}
+    ${metadata.map(([k,v])=>`<p><strong>${esc(k)}:</strong> ${esc(v)}</p>`).join("")}
+    ${w.notes?`<p><strong>Anmerkungen:</strong> ${esc(w.notes)}</p>`:""}
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+    <h2>Kapitel</h2>
+    <div class="chapter-list">
+      ${(w.chapters||[]).map((ch,i)=>`<button class="chapter-link" type="button" data-read-chapter="${i}"><span>${i+1}. ${esc(ch.title||"Kapitel "+(i+1))}</span><span class="reader-meta">${wordCount(ch.text||"").toLocaleString("de-DE")} Wörter　›</span></button>`).join("")||'<p class="muted">Noch keine Kapitel vorhanden.</p>'}
+    </div>
+    <div class="actions"><button class="btn" data-detail-edit="${esc(w.id)}">Werk bearbeiten</button><button class="btn secondary" data-detail-bookmark="${esc(w.id)}">${w.bookmarked?"Lesezeichen entfernen":"Als Lesezeichen speichern"}</button></div>`;
+  document.querySelector("[data-detail-edit]").addEventListener("click",()=>editWork(w.id));
+  document.querySelector("[data-detail-bookmark]").addEventListener("click",async()=>{await toggleBookmark(w.id);openDetail(w.id);});
+  document.querySelectorAll("[data-read-chapter]").forEach(btn=>btn.addEventListener("click",()=>openReader(w.id,Number(btn.dataset.readChapter))));
+  showPage("detail");
+}
+
+let readerWorkId = null;
+let readerChapterIndex = 0;
+let readerFontSize = 18;
+
+async function openReader(workId, chapterIndex){
+  const work=(await getAllWorks()).find(w=>w.id===workId);
+  if(!work || !work.chapters || !work.chapters.length) return;
+  readerWorkId=workId;
+  readerChapterIndex=Math.max(0,Math.min(chapterIndex,work.chapters.length-1));
+  await renderReader();
+  showPage("reader");
+}
+async function renderReader(){
+  const works=await getAllWorks();
+  const work=works.find(w=>w.id===readerWorkId);
+  if(!work || !work.chapters?.length) return;
+  const chapter=work.chapters[readerChapterIndex];
+  document.getElementById("readerWorkTitle").textContent=work.title;
+  document.getElementById("readerChapterMeta").textContent=[work.fandom,work.rating].filter(Boolean).join(" · ");
+  document.getElementById("readerChapterTitle").textContent=chapter.title||`Kapitel ${readerChapterIndex+1}`;
+  const textEl=document.getElementById("readerText");
+  textEl.textContent=chapter.text||"Dieses Kapitel ist noch leer.";
+  textEl.style.fontSize=readerFontSize+"px";
+  const total=work.chapters.length;
+  const progress=((readerChapterIndex+1)/total)*100;
+  document.getElementById("readerProgressText").textContent=`Kapitel ${readerChapterIndex+1} von ${total} · ${wordCount(chapter.text||"").toLocaleString("de-DE")} Wörter`;
+  document.getElementById("readerProgressFill").style.width=progress+"%";
+  const prev=document.getElementById("readerPrev"),next=document.getElementById("readerNext");
+  prev.disabled=readerChapterIndex===0;next.disabled=readerChapterIndex===total-1;
+  prev.style.opacity=prev.disabled?".45":"1";next.style.opacity=next.disabled?".45":"1";
+  // Store the last opened chapter as a reading position for this work.
+  work.lastReadChapter=readerChapterIndex;
+  await saveWork(work);
+}
+document.getElementById("readerPrev").addEventListener("click",async()=>{if(readerChapterIndex>0){readerChapterIndex--;await renderReader();window.scrollTo({top:0,behavior:"smooth"});}});
+document.getElementById("readerNext").addEventListener("click",async()=>{const w=(await getAllWorks()).find(x=>x.id===readerWorkId);if(w&&readerChapterIndex<w.chapters.length-1){readerChapterIndex++;await renderReader();window.scrollTo({top:0,behavior:"smooth"});}});
+document.getElementById("backToDetail").addEventListener("click",()=>openDetail(readerWorkId));
+document.getElementById("fontDown").addEventListener("click",()=>{readerFontSize=Math.max(14,readerFontSize-2);document.getElementById("readerText").style.fontSize=readerFontSize+"px";});
+document.getElementById("fontUp").addEventListener("click",()=>{readerFontSize=Math.min(28,readerFontSize+2);document.getElementById("readerText").style.fontSize=readerFontSize+"px";});
+document.getElementById("fontReset").addEventListener("click",()=>{readerFontSize=18;document.getElementById("readerText").style.fontSize=readerFontSize+"px";});
+
+function chapterMarkup(ch={},index=0){
+  const id=`chapter-${index}`;
+  return `<div class="chapter-box" data-chapter>
+    <div class="chapter-top"><strong>Kapitel ${index+1}</strong><button type="button" class="btn danger small" data-remove-chapter>Kapitel entfernen</button></div>
+    <div class="field"><label>Kapitelüberschrift</label><input data-chapter-title maxlength="180" value="${esc(ch.title||"")}" placeholder="z. B. Kapitel 1 – Ein neuer Anfang"></div>
+    <div class="toolbar">
+      <button type="button" data-wrap="**">Fett **</button><button type="button" data-wrap="*">Kursiv *</button><button type="button" data-wrap="__">Unterstrichen __</button>
+    </div>
+    <div class="field"><label>Kapiteltext</label><textarea data-chapter-text placeholder="Deine Geschichte beginnt hier …">${esc(ch.text||"")}</textarea><span class="help" data-word-count>${wordCount(ch.text||"")} Wörter</span></div>
+  </div>`;
+}
+function addChapter(ch={}){const container=document.getElementById("chaptersEditor");const index=container.querySelectorAll("[data-chapter]").length;container.insertAdjacentHTML("beforeend",chapterMarkup(ch,index));bindChapterControls();}
+function bindChapterControls(){
+  document.querySelectorAll("[data-remove-chapter]").forEach(btn=>{if(btn.dataset.bound)return;btn.dataset.bound="1";btn.addEventListener("click",()=>{if(document.querySelectorAll("[data-chapter]").length<=1){alert("Ein Werk sollte mindestens ein Kapitel-Feld haben.");return;}btn.closest("[data-chapter]").remove();renumberChapters();});});
+  document.querySelectorAll("[data-chapter-text]").forEach(area=>{if(area.dataset.bound)return;area.dataset.bound="1";area.addEventListener("input",()=>{area.parentElement.querySelector("[data-word-count]").textContent=wordCount(area.value)+" Wörter";});});
+  document.querySelectorAll("[data-wrap]").forEach(btn=>{if(btn.dataset.bound)return;btn.dataset.bound="1";btn.addEventListener("click",()=>{const area=btn.closest("[data-chapter]").querySelector("[data-chapter-text]");const mark=btn.dataset.wrap;const start=area.selectionStart,end=area.selectionEnd;const selected=area.value.slice(start,end);const replacement=mark+selected+mark;area.setRangeText(replacement,start,end,"select");area.focus();area.dispatchEvent(new Event("input"));});});
+}
+function renumberChapters(){document.querySelectorAll("[data-chapter]").forEach((el,i)=>el.querySelector(".chapter-top strong").textContent="Kapitel "+(i+1));}
+document.getElementById("addChapter").addEventListener("click",()=>addChapter());
+function resetForm(){
+  document.getElementById("workForm").reset();document.getElementById("workId").value="";
+  document.getElementById("formHeading").textContent="Neues Werk erstellen";document.getElementById("formEyebrow").textContent="Schreibbereich";
+  document.getElementById("chaptersEditor").innerHTML="";addChapter();
+}
+async function editWork(id){
+  const w=(await getAllWorks()).find(x=>x.id===id);if(!w)return;showPage("new");
+  document.getElementById("formHeading").textContent="Werk bearbeiten";document.getElementById("formEyebrow").textContent="Bearbeiten";
+  document.getElementById("workId").value=w.id;
+  for(const key of ["title","fandom","rating","category","status","warnings","relationships","summary","notes"])document.getElementById(key).value=w[key]||"";
+  document.getElementById("characters").value=(w.characters||[]).join(", ");
+  document.getElementById("tags").value=(w.tags||[]).join(", ");
+  document.getElementById("chaptersEditor").innerHTML="";
+  (w.chapters||[]).forEach(ch=>addChapter(ch));if(!(w.chapters||[]).length)addChapter();
+}
+document.getElementById("cancelEdit").addEventListener("click",()=>{resetForm();showPage("works");});
+document.getElementById("workForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const id=document.getElementById("workId").value||crypto.randomUUID();
+  const old=(await getAllWorks()).find(w=>w.id===id);
+  const chapters=[...document.querySelectorAll("[data-chapter]")].map((el,i)=>({id:old?.chapters?.[i]?.id||crypto.randomUUID(),title:el.querySelector("[data-chapter-title]").value.trim()||`Kapitel ${i+1}`,text:el.querySelector("[data-chapter-text]").value}));
+  const work={id,title:document.getElementById("title").value.trim(),fandom:document.getElementById("fandom").value.trim(),rating:document.getElementById("rating").value,category:document.getElementById("category").value,status:document.getElementById("status").value,warnings:document.getElementById("warnings").value.trim(),relationships:document.getElementById("relationships").value.trim(),characters:splitTags(document.getElementById("characters").value),tags:splitTags(document.getElementById("tags").value),summary:document.getElementById("summary").value.trim(),notes:document.getElementById("notes").value.trim(),chapters,bookmarked:old?.bookmarked||false,createdAt:old?.createdAt||Date.now(),updatedAt:Date.now()};
+  await saveWork(work);resetForm();await refreshViews();showPage("works");alert("Dein Werk wurde in SimpHub gespeichert! ♡");
+});
+document.getElementById("exportBtn").addEventListener("click",async()=>{
+  const data={app:"SimpHub",version:1,exportedAt:new Date().toISOString(),works:await getAllWorks()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="SimpHub-Backup-"+new Date().toISOString().slice(0,10)+".json";a.click();URL.revokeObjectURL(url);
+});
+document.getElementById("importBtn").addEventListener("click",()=>document.getElementById("importFile").click());
+document.getElementById("importFile").addEventListener("change",async e=>{
+  const file=e.target.files[0];if(!file)return;
+  try{const data=JSON.parse(await file.text());if(data.app!=="SimpHub"||!Array.isArray(data.works))throw new Error("Ungültiges SimpHub-Backup.");if(!confirm(`${data.works.length} Werke importieren? Bestehende Werke mit gleicher ID werden aktualisiert.`))return;for(const w of data.works){if(!w.id||!w.title)continue;await saveWork(w);}await refreshViews();alert("Backup erfolgreich importiert! ♡");}
+  catch(err){alert("Das Backup konnte nicht importiert werden: "+err.message);}
+  finally{e.target.value="";}
+});
+
+(async()=>{
+  try{await openDatabase();resetForm();await refreshViews();}
+  catch(error){console.error(error);alert("Dein Browser unterstützt IndexedDB nicht oder der Zugriff wurde blockiert. Bitte öffne SimpHub in einem aktuellen Browser.");}
+})();
+</script>
+</body>
+</html>
